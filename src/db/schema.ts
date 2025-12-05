@@ -83,3 +83,4 @@ export const aiGeneratedTopics = pgTable('ai_generated_topics', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+

@@ -62,3 +62,4 @@ export async function insertMarketsFromPredictions(predictions: GeneratedPredict
   return createdCount;
 }
 
+

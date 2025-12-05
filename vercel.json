@@ -2,7 +2,7 @@
     "crons": [
         {
             "path": "/api/admin/run-trend-agent?token=${CRON_SECRET}",
-            "schedule": "*/10 * * * *"
+            "schedule": "0 12 * * *"
         }
     ]
 }
