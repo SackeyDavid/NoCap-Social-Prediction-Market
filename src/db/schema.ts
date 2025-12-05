@@ -83,11 +83,26 @@ export const aiGeneratedTopics = pgTable('ai_generated_topics', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+export const comments = pgTable('comments', {
+  id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+  userId: uuid('user_id').references(() => users.id).notNull(),
+  marketId: uuid('market_id').references(() => markets.id).notNull(),
+  message: text('message').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
 import { relations } from 'drizzle-orm';
 
 // Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  bets: many(bets),
+  comments: many(comments),
+}));
+
 export const marketsRelations = relations(markets, ({ many }) => ({
   options: many(marketOptions),
+  betItems: many(betItems),
+  comments: many(comments),
 }));
 
 export const marketOptionsRelations = relations(marketOptions, ({ one }) => ({
@@ -117,5 +132,16 @@ export const betItemsRelations = relations(betItems, ({ one }) => ({
   marketOption: one(marketOptions, {
     fields: [betItems.marketOptionId],
     references: [marketOptions.id],
+  }),
+}));
+
+export const commentsRelations = relations(comments, ({ one }) => ({
+  user: one(users, {
+    fields: [comments.userId],
+    references: [users.id],
+  }),
+  market: one(markets, {
+    fields: [comments.marketId],
+    references: [markets.id],
   }),
 }));

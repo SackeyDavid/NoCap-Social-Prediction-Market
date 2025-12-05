@@ -11,6 +11,14 @@ interface Market {
   category: string;
   sourceType: string;
   closesAt: Date | string;
+  options?: { id: string; label: string; marketId: string }[];
+  stats?: {
+    totalVolumeCents: number;
+    yesPercentage: number;
+    noPercentage: number;
+    totalBets: number;
+    commentCount: number;
+  };
 }
 
 export function MarketCard({ market }: { market: Market }) {
@@ -20,13 +28,12 @@ export function MarketCard({ market }: { market: Market }) {
   const [stake, setStake] = useState('10');
   const [loading, setLoading] = useState(false);
 
-  // Mock data for UI matching since backend doesn't compute these yet
-  // Deterministic pseudo-random based on market ID to avoid hydration mismatch
+  // Use real stats from server, fallback to deterministic values
   const hash = market.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const yesPercentage = (hash % 60) + 20; // 20-80%
-  const noPercentage = 100 - yesPercentage;
-  const commentCount = hash % 50;
-  const totalVolume = (hash % 10000) + 1000;
+  const yesPercentage = market.stats?.yesPercentage ?? ((hash % 60) + 20);
+  const noPercentage = market.stats?.noPercentage ?? (100 - yesPercentage);
+  const commentCount = market.stats?.commentCount ?? 0;
+  const totalVolume = market.stats?.totalVolumeCents ?? 0;
 
   const handleSelection = (selection: 'yes' | 'no', e: React.MouseEvent) => {
     e.preventDefault();

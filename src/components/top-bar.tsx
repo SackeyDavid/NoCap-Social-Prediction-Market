@@ -27,11 +27,17 @@ export function TopBar() {
   return (
     <div className="sticky top-0 bg-[#050505]/80 backdrop-blur-xl border-b border-white/10 z-30">
       <div className="flex items-center justify-between px-6 h-16 max-w-5xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#00FF94] to-[#2E5CFF] rounded-lg flex items-center justify-center">
-            <span className="text-black text-lg">⚡</span>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#00FF94] via-[#2E5CFF] to-[#7C3AED] shadow-lg shadow-[#00FF94]/30 flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 bg-white/5" />
+              <span className="relative text-black font-black text-sm tracking-tight">NC</span>
+            </div>
           </div>
-          <span className="text-white font-bold text-lg">NoCap</span>
+          <div>
+            <div className="text-white font-black text-lg leading-tight">NoCap</div>
+            <div className="text-xs text-gray-500">Prediction Markets</div>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">

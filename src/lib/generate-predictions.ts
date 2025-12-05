@@ -35,7 +35,7 @@ export async function generatePredictionsFromTopics(topics: NormalizedTopic[]): 
 
     const prompt = `
 You are an expert prediction market maker for "NoCap", an app for African Gen-Z users.
-Your goal is to create FUN, VIRAL, and FUTURE-ORIENTED prediction markets based on current news.
+Your goal is to create FUN, VIRAL, and FUTURE-ORIENTED prediction markets based on current news FROM AFRICA.
 
 CRITICAL RULES:
 1. ONLY generate questions about FUTURE outcomes happening within the NEXT 1-3 DAYS.
@@ -44,6 +44,16 @@ CRITICAL RULES:
 4. Categories must be one of: music, sports, politics, entertainment, crypto, culture.
 5. Focus on SHORT TERM, HIGH VELOCITY events (e.g. "Will [Team] win tomorrow?", "Will [Coin] hit $X by Friday?").
 6. Confidence score (0-1) represents how clear and unambiguous the resolution criteria would be.
+7. FOCUS ON AFRICA - Nigerian music, Ghanaian football, South African politics, Kenyan tech, etc.
+8. Include events from: Nigeria, Ghana, Kenya, South Africa, Egypt, Tanzania, Rwanda, Senegal, Ethiopia, Uganda.
+
+AFRICAN FOCUS EXAMPLES:
+- "Will Asake drop a new single this week?"
+- "Will Ghana Black Stars win their next AFCON qualifier?"
+- "Will Kenya's Central Bank announce crypto regulations by Friday?"
+- "Will Burna Boy announce an African tour date?"
+- "Will the Nigerian Naira strengthen against USD tomorrow?"
+- "Will Amapiano dominate the SA charts this weekend?"
 
 Here are the trending topics:
 ${JSON.stringify(batch.map(t => ({ title: t.title, snippet: t.snippet, published: t.publishedAt })), null, 2)}

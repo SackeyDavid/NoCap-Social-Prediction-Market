@@ -1,37 +1,39 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
+import { Pool, Client } from 'pg';
 import * as schema from './schema';
 
-// Add support for "transaction" mode or "session" mode if needed, 
-// but standard pool is fine for general usage.
-
 const connectionString = process.env.DATABASE_URL;
-
-// Use a mock or empty pool if no connection string (e.g. during build)
-// This prevents "getaddrinfo ENOTFOUND" if the default string is invalid/unreachable
-const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
 
 if (!connectionString) {
   console.warn('DATABASE_URL is not defined. Using fallback or mock.');
 }
 
-// Ensure we use a robust connection configuration for Supabase
-// Supabase transaction pooler (port 6543) doesn't support some statement types, 
-// but for simple queries it is fine. The session pooler (port 5432) is safer for ORMs.
-
-// Prevent multiple connections in development
+// For Supabase, use individual Client connections instead of Pool
+// This is more stable for serverless/edge environments
 const globalForDb = globalThis as unknown as {
-  conn: Pool | undefined;
+  pool: Pool | undefined;
 };
 
-const pool = globalForDb.conn ?? new Pool({
+// Create pool only if not already created (prevent hot reload issues)
+const pool = globalForDb.pool ?? new Pool({
   connectionString: connectionString || 'postgres://postgres:postgres@localhost:5432/nocap',
-  ssl: connectionString?.includes('supabase') || connectionString?.includes('neon') ? { rejectUnauthorized: false } : undefined,
-  max: 10,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  ssl: connectionString?.includes('supabase') || connectionString?.includes('neon')
+    ? { rejectUnauthorized: false }
+    : undefined,
+  max: 1, // Single connection for stability
+  min: 0,
+  idleTimeoutMillis: 0, // Don't keep idle connections
+  connectionTimeoutMillis: 60000, // 60 second timeout
 });
 
-if (process.env.NODE_ENV !== 'production') globalForDb.conn = pool;
+pool.on('error', (err) => {
+  console.error('Pool error - will retry on next request:', err.message);
+});
+
+pool.on('connect', () => {
+  console.log('DB pool connected');
+});
+
+if (process.env.NODE_ENV !== 'production') globalForDb.pool = pool;
 
 export const db = drizzle(pool, { schema });

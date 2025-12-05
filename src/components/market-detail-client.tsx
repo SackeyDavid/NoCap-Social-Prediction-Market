@@ -38,12 +38,13 @@ export function MarketDetailClient({ market, user }: MarketDetailClientProps) {
     const [selectedOption, setSelectedOption] = useState<'yes' | 'no' | null>(null);
     const [loading, setLoading] = useState(false);
 
-    // Deterministic stats based on market ID
+    // Use real stats from server, fallback to deterministic values
     const hash = market.id.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
-    const yesPercentage = (hash % 60) + 20;
-    const noPercentage = 100 - yesPercentage;
-    const totalVolume = (hash % 10000) + 1000;
-    const commentCount = hash % 50;
+    const yesPercentage = market.stats?.yesPercentage ?? 50;
+    const noPercentage = market.stats?.noPercentage ?? 50;
+    const totalVolume = market.stats?.totalVolumeCents ?? 0;
+    const totalBets = market.stats?.totalBets ?? 0;
+    const commentCount = market.stats?.commentCount ?? 0;
 
     const handleBet = async () => {
         if (!user) {
@@ -221,15 +222,19 @@ export function MarketDetailClient({ market, user }: MarketDetailClientProps) {
                         <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 space-y-4">
                             <div className="flex justify-between border-b border-white/5 pb-3">
                                 <span className="text-gray-400">Total Bets</span>
-                                <span className="text-white font-mono">2,456</span>
+                                <span className="text-white font-mono">{totalBets.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between border-b border-white/5 pb-3">
-                                <span className="text-gray-400">Average Stake</span>
-                                <span className="text-white font-mono">₵18.34</span>
+                                <span className="text-gray-400">Total Volume</span>
+                                <span className="text-white font-mono">₵{(totalVolume / 100).toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between border-b border-white/5 pb-3">
+                                <span className="text-gray-400">Yes Bets</span>
+                                <span className="text-[#00FF94] font-mono">{yesPercentage}%</span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-gray-400">Biggest Bet</span>
-                                <span className="text-white font-mono">₵500.00</span>
+                                <span className="text-gray-400">No Bets</span>
+                                <span className="text-[#FF0055] font-mono">{noPercentage}%</span>
                             </div>
                         </div>
                     )}
