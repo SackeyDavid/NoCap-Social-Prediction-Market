@@ -8,6 +8,14 @@ async function debugBets() {
     console.log(`Fetching bets for user: ${userId}`);
 
     try {
+        // Test basic connection
+        const result = await db.execute('SELECT 1');
+        console.log('SELECT 1 result:', result);
+
+        // Simple query first
+        const simpleBets = await db.select().from(bets).where(eq(bets.userId, userId));
+        console.log('Simple bets found:', simpleBets.length);
+
         const userBets = await db.select({
             id: bets.id,
             stake: bets.stakeCents,

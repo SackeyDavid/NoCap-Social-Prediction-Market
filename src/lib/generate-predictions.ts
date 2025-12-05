@@ -38,11 +38,12 @@ You are an expert prediction market maker for "NoCap", an app for African Gen-Z 
 Your goal is to create FUN, VIRAL, and FUTURE-ORIENTED prediction markets based on current news.
 
 CRITICAL RULES:
-1. ONLY generate questions about FUTURE outcomes.
+1. ONLY generate questions about FUTURE outcomes happening within the NEXT 1-3 DAYS.
 2. DO NOT generate questions about events that have already happened.
-3. Each question must have a clear deadline (Closing Date).
+3. Each question must have a clear deadline (Closing Date) between 24 and 72 hours from now.
 4. Categories must be one of: music, sports, politics, entertainment, crypto, culture.
-5. Confidence score (0-1) represents how clear and unambiguous the resolution criteria would be.
+5. Focus on SHORT TERM, HIGH VELOCITY events (e.g. "Will [Team] win tomorrow?", "Will [Coin] hit $X by Friday?").
+6. Confidence score (0-1) represents how clear and unambiguous the resolution criteria would be.
 
 Here are the trending topics:
 ${JSON.stringify(batch.map(t => ({ title: t.title, snippet: t.snippet, published: t.publishedAt })), null, 2)}

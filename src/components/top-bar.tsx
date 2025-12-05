@@ -3,6 +3,7 @@ import { Bell } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { useEffect, useState } from 'react'
 import { getUserWallet } from '@/app/actions/wallet'
+import { usePathname } from 'next/navigation'
 
 export function TopBar() {
   const { user } = useAuth()
@@ -18,6 +19,11 @@ export function TopBar() {
     }
   }, [user])
 
+  const pathname = usePathname()
+
+  // Hide TopBar on market detail pages as they have their own immersive header
+  if (pathname?.startsWith('/markets/')) return null
+
   return (
     <div className="sticky top-0 bg-[#050505]/80 backdrop-blur-xl border-b border-white/10 z-30">
       <div className="flex items-center justify-between px-6 h-16 max-w-5xl mx-auto">
@@ -27,7 +33,7 @@ export function TopBar() {
           </div>
           <span className="text-white font-bold text-lg">NoCap</span>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <button className="relative">
             <Bell size={20} className="text-gray-400" />

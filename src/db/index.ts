@@ -27,9 +27,9 @@ const globalForDb = globalThis as unknown as {
 const pool = globalForDb.conn ?? new Pool({
   connectionString: connectionString || 'postgres://postgres:postgres@localhost:5432/nocap',
   ssl: connectionString?.includes('supabase') || connectionString?.includes('neon') ? { rejectUnauthorized: false } : undefined,
-  max: 20, // Increase pool size slightly
+  max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000, // Increased to 10s
+  connectionTimeoutMillis: 10000,
 });
 
 if (process.env.NODE_ENV !== 'production') globalForDb.conn = pool;

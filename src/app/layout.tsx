@@ -34,14 +34,14 @@ export default function RootLayout({
         <AuthProvider>
           <TopBar />
           <div className="pb-20 md:pl-0"> {/* Removed sidebar padding for now to match mobile-first legacy design */}
-             {/* We can keep the desktop sidebar if we want, but user asked for "original UI" which seemed mobile focused. 
+            {/* We can keep the desktop sidebar if we want, but user asked for "original UI" which seemed mobile focused. 
                  I'll hide the sidebar for now or restyle it if I had one. 
                  The previous layout had a sidebar. I'll keep it simple and mobile-first as requested. */}
-             
-             <main className="max-w-5xl mx-auto p-4">
-                {children}
-             </main>
-             <BottomNav />
+
+            <main className="max-w-5xl mx-auto">
+              {children}
+            </main>
+            <BottomNav />
           </div>
         </AuthProvider>
       </body>

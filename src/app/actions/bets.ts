@@ -9,13 +9,13 @@ import { eq, desc } from 'drizzle-orm'
 export async function placeBet(marketId: string, optionId: string, stakeCents: number) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
+
   if (!user) throw new Error('Unauthorized')
-  
+
   try {
     // 1. Debit Wallet
     await debitWallet(user.id, stakeCents, { type: 'bet_placed', marketId })
-    
+
     // 2. Calculate Potential Payout (Fixed odds 2.0 for MVP Yes/No unless specified)
     // For now, let's assume 1.9x (house edge)
     const multiplier = 1.9;
@@ -49,22 +49,40 @@ export async function getMyBets() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return []
 
-  const userBets = await db.select({
-      id: bets.id,
-      stake: bets.stakeCents,
-      payout: bets.potentialPayoutCents,
-      status: bets.status,
-      createdAt: bets.createdAt,
-      marketTitle: markets.title, // simple join
-      optionLabel: marketOptions.label
-  })
-  .from(bets)
-  .leftJoin(betItems, eq(bets.id, betItems.betId))
-  .leftJoin(markets, eq(betItems.marketId, markets.id))
-  .leftJoin(marketOptions, eq(betItems.marketOptionId, marketOptions.id))
-  .where(eq(bets.userId, user.id))
-  .orderBy(desc(bets.createdAt));
-  
-  return userBets;
+  // 1. Fetch bets
+  const userBets = await db.query.bets.findMany({
+    where: eq(bets.userId, user.id),
+    orderBy: [desc(bets.createdAt)],
+    with: {
+      // Drizzle's 'with' syntax is cleaner but if it uses joins under the hood that fail, we might need manual
+      // Let's try manual fetching to be safe against pooler issues
+    }
+  });
+
+  if (userBets.length === 0) return [];
+
+  // 2. Fetch related details manually to avoid complex joins crashing the pooler
+  const enrichedBets = await Promise.all(userBets.map(async (bet) => {
+    // Get bet item to find market/option
+    const betItem = await db.query.betItems.findFirst({
+      where: eq(betItems.betId, bet.id),
+      with: {
+        market: true,
+        marketOption: true
+      }
+    });
+
+    return {
+      id: bet.id,
+      stake: bet.stakeCents,
+      payout: bet.potentialPayoutCents,
+      status: bet.status,
+      createdAt: bet.createdAt,
+      marketTitle: betItem?.market?.title || 'Unknown Market',
+      optionLabel: betItem?.marketOption?.label || 'Unknown Option'
+    };
+  }));
+
+  return enrichedBets;
 }
 
