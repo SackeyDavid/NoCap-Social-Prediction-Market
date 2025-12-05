@@ -14,10 +14,10 @@ export async function getUserWallet() {
   let wallet = await db.query.wallets.findFirst({
     where: eq(wallets.userId, user.id),
   })
-  
+
   if (!wallet) {
-     // Auto create
-     wallet = await createWalletForUser(user.id);
+    // Auto create
+    wallet = await createWalletForUser(user.id, user.email);
   }
 
   return wallet

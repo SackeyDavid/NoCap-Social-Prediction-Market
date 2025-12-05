@@ -2,8 +2,22 @@ import { db } from '@/db';
 import { wallets, transactions, transactionTypeEnum } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
-export async function createWalletForUser(userId: string) {
-  // Check if exists first
+import { users } from '@/db/schema';
+
+export async function createWalletForUser(userId: string, email?: string) {
+  // Ensure user exists in public table (sync with auth)
+  if (email) {
+    await db.insert(users).values({
+      id: userId,
+      email: email,
+      updatedAt: new Date(),
+    }).onConflictDoUpdate({
+      target: users.id,
+      set: { email: email, updatedAt: new Date() }
+    });
+  }
+
+  // Check if wallet exists
   const existing = await db.query.wallets.findFirst({
     where: eq(wallets.userId, userId),
   });
@@ -32,7 +46,7 @@ export async function creditWallet(userId: string, amountCents: number, meta: an
     }
 
     const newBalance = wallet.balanceCents + amountCents;
-    
+
     await tx.update(wallets)
       .set({ balanceCents: newBalance, updatedAt: new Date() })
       .where(eq(wallets.id, wallet.id));

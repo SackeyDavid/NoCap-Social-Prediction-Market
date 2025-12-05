@@ -19,12 +19,19 @@ if (!connectionString) {
 // Supabase transaction pooler (port 6543) doesn't support some statement types, 
 // but for simple queries it is fine. The session pooler (port 5432) is safer for ORMs.
 
-const pool = new Pool({
+// Prevent multiple connections in development
+const globalForDb = globalThis as unknown as {
+  conn: Pool | undefined;
+};
+
+const pool = globalForDb.conn ?? new Pool({
   connectionString: connectionString || 'postgres://postgres:postgres@localhost:5432/nocap',
   ssl: connectionString?.includes('supabase') || connectionString?.includes('neon') ? { rejectUnauthorized: false } : undefined,
   max: 20, // Increase pool size slightly
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000, // Increased to 10s
 });
+
+if (process.env.NODE_ENV !== 'production') globalForDb.conn = pool;
 
 export const db = drizzle(pool, { schema });
