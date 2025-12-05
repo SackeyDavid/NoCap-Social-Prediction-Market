@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { MessageCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useTheme } from '@/contexts/theme-context'
 
 interface Market {
   id: string;
@@ -86,10 +87,14 @@ export function MarketCard({ market }: { market: Market }) {
   };
 
   const imagePrompt = categoryImages[market.category] || categoryImages.local;
+  const { theme } = useTheme();
 
   return (
     <Link href={`/markets/${market.slug}`} className="block">
-      <div className="bg-white/5 backdrop-blur-xl rounded-3xl overflow-hidden border border-white/10 hover:border-white/20 transition-all cursor-pointer group">
+      <div className={`backdrop-blur-xl rounded-3xl overflow-hidden border transition-all cursor-pointer group ${theme === 'dark'
+          ? 'bg-white/5 border-white/10 hover:border-white/20'
+          : 'bg-white border-gray-200 hover:border-gray-300 shadow-sm'
+        }`}>
 
         {/* Card Image */}
         <div className="h-32 relative overflow-hidden">
@@ -98,9 +103,15 @@ export function MarketCard({ market }: { market: Market }) {
             alt={market.title}
             className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent" />
+          <div className={`absolute inset-0 bg-gradient-to-t ${theme === 'dark'
+              ? 'from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent'
+              : 'from-white via-white/50 to-transparent'
+            }`} />
           <div className="absolute bottom-2 left-4">
-            <div className="inline-block px-2 py-0.5 bg-black/60 backdrop-blur-md text-white/90 border border-white/10 rounded-full text-[10px] uppercase tracking-wider font-bold">
+            <div className={`inline-block px-2 py-0.5 backdrop-blur-md border rounded-full text-[10px] uppercase tracking-wider font-bold ${theme === 'dark'
+                ? 'bg-black/60 text-white/90 border-white/10'
+                : 'bg-white/80 text-gray-800 border-gray-200'
+              }`}>
               {market.category}
             </div>
           </div>
@@ -109,7 +120,8 @@ export function MarketCard({ market }: { market: Market }) {
         <div className="p-5 pt-3">
 
           {/* Question */}
-          <h3 className="text-white mb-4 text-lg font-medium leading-snug">{market.title}</h3>
+          <h3 className={`mb-4 text-lg font-medium leading-snug ${theme === 'dark' ? 'text-white' : 'text-gray-900'
+            }`}>{market.title}</h3>
 
           {/* Progress Bar */}
           <div className="relative h-2 bg-white/10 rounded-full mb-4 overflow-hidden">

@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { BottomNav } from "@/components/bottom-nav";
 import { TopBar } from "@/components/top-bar";
+import { ThemeProvider } from "@/contexts/theme-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,22 +29,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#050505] text-white min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
         suppressHydrationWarning
       >
-        <AuthProvider>
-          <TopBar />
-          <div className="pb-20 md:pl-0"> {/* Removed sidebar padding for now to match mobile-first legacy design */}
-            {/* We can keep the desktop sidebar if we want, but user asked for "original UI" which seemed mobile focused. 
-                 I'll hide the sidebar for now or restyle it if I had one. 
-                 The previous layout had a sidebar. I'll keep it simple and mobile-first as requested. */}
-
-            <main className="max-w-5xl mx-auto">
-              {children}
-            </main>
-            <BottomNav />
-          </div>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <TopBar />
+            <div className="pb-20 md:pl-0">
+              <main className="max-w-5xl mx-auto">
+                {children}
+              </main>
+              <BottomNav />
+            </div>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

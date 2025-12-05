@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { MarketCard } from '@/components/market-card'
 import { useRouter } from 'next/navigation'
 import { getMarkets } from '@/app/actions/markets'
+import { useTheme } from '@/contexts/theme-context'
 
 interface HomeClientProps {
     initialMarkets: any[]
@@ -17,6 +18,7 @@ export function HomeClient({ initialMarkets }: HomeClientProps) {
     const touchStartY = useRef(0)
     const containerRef = useRef<HTMLDivElement>(null)
     const router = useRouter()
+    const { theme } = useTheme()
 
     // Auto-refresh every 30 seconds
     useEffect(() => {
@@ -31,12 +33,11 @@ export function HomeClient({ initialMarkets }: HomeClientProps) {
             } catch (error) {
                 console.error('Auto-refresh failed:', error)
             }
-        }, 30000) // 30 seconds
+        }, 30000)
 
         return () => clearInterval(interval)
     }, [markets])
 
-    // Update markets when initialMarkets prop changes
     useEffect(() => {
         setMarkets(initialMarkets)
     }, [initialMarkets])
@@ -63,11 +64,9 @@ export function HomeClient({ initialMarkets }: HomeClientProps) {
             setIsRefreshing(true)
 
             try {
-                // Trigger the agent to generate new markets
                 const response = await fetch('/api/admin/run-trend-agent?token=' + (process.env.NEXT_PUBLIC_ADMIN_SECRET || 'dev-secret'))
 
                 if (response.ok) {
-                    // Refresh the page to show new markets
                     router.refresh()
                 }
             } catch (error) {
@@ -138,7 +137,10 @@ export function HomeClient({ initialMarkets }: HomeClientProps) {
                                     </div>
                                 </div>
                             </div>
-                            <span className="text-xs text-gray-400 capitalize font-medium group-hover:text-white transition-colors">{cat.name}</span>
+                            <span className={`text-xs capitalize font-medium transition-colors ${theme === 'dark'
+                                    ? 'text-gray-400 group-hover:text-white'
+                                    : 'text-gray-600 group-hover:text-gray-900'
+                                }`}>{cat.name}</span>
                         </a>
                     ))}
                 </div>
@@ -147,7 +149,7 @@ export function HomeClient({ initialMarkets }: HomeClientProps) {
             {/* Markets Grid */}
             <div className="px-4">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-white">Trending Markets</h2>
+                    <h2 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Trending Markets</h2>
                     <span className="text-sm text-gray-400">{markets.length} live</span>
                 </div>
 
