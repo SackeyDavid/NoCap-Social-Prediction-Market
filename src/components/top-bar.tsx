@@ -29,9 +29,9 @@ export function TopBar() {
       <div className="flex items-center justify-between px-6 h-16 max-w-5xl mx-auto">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#00FF94] via-[#2E5CFF] to-[#7C3AED] shadow-lg shadow-[#00FF94]/30 flex items-center justify-center overflow-hidden">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#3B82F6] via-[#2563EB] to-[#1D4ED8] shadow-lg shadow-[#2563EB]/30 flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 bg-white/5" />
-              <span className="relative text-black font-black text-sm tracking-tight">NC</span>
+              <span className="relative text-white text-lg">🧢</span>
             </div>
           </div>
           <div>

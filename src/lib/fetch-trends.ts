@@ -9,15 +9,19 @@ export interface NormalizedTopic {
   region?: string;
 }
 
-// Queries to capture African/Glocal trends
+// Queries to capture Ghana trends - heavy on celebrity news
 const TREND_QUERIES = [
-  { query: "What is trending right now in Ghana?", region: "Ghana" },
-  { query: "What is trending right now in Nigeria?", region: "Nigeria" },
-  { query: "What is trending right now in Kenya?", region: "Kenya" },
-  { query: "What is trending right now in South Africa?", region: "South Africa" },
-  { query: "African entertainment trending today", region: "Africa" },
-  { query: "Latest viral celebrity controversy Africa", region: "Africa" },
-  { query: "Sports trending this week Africa", region: "Africa" },
+  { query: "Ghana celebrity news trending Twitter", region: "Ghana" },
+  { query: "Shatta Wale Stonebwoy Sarkodie news today", region: "Ghana" },
+  { query: "Ghana entertainment gossip celebrity drama", region: "Ghana" },
+  { query: "Black Sherif Medikal Ghana music news", region: "Ghana" },
+  { query: "Jackie Appiah Nana Ama McBrown trending", region: "Ghana" },
+  { query: "Ghana Twitter beef celebrity drama viral", region: "Ghana" },
+  { query: "Ghanaian actress actor trending news", region: "Ghana" },
+  { query: "Ghana influencer YouTuber trending", region: "Ghana" },
+  { query: "Ghana sports Black Stars news", region: "Ghana" },
+  { query: "Accra Kumasi Ghana news today", region: "Ghana" },
+  { query: "ECG dumsor Ghana power outage trending", region: "Ghana" },
 ];
 
 function determineCategory(text: string): NormalizedTopic['category'] {

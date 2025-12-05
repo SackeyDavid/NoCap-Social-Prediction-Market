@@ -8,6 +8,7 @@ const categoryInfo: Record<string, { emoji: string; color: string; description: 
     music: { emoji: '🎵', color: '#FF6B35', description: 'Predict the next hit songs, album drops, and artist moves' },
     sports: { emoji: '⚽', color: '#00FF94', description: 'Bet on games, transfers, and tournament outcomes' },
     politics: { emoji: '🗳️', color: '#2E5CFF', description: 'Forecast elections, policy changes, and global events' },
+    local: { emoji: '🏙️', color: '#FFD700', description: 'Dumsor, trotro drama, market prices - real everyday life' },
     entertainment: { emoji: '🎬', color: '#FF0055', description: 'Movies, TV shows, celebrities, and viral moments' },
     crypto: { emoji: '₿', color: '#F7931A', description: 'Price predictions, regulations, and blockchain news' },
     culture: { emoji: '🌍', color: '#9B59B6', description: 'Trends, memes, and cultural phenomena' },

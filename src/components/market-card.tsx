@@ -75,6 +75,18 @@ export function MarketCard({ market }: { market: Market }) {
     }
   };
 
+  // Category-specific image prompts for better relevance
+  const categoryImages: Record<string, string> = {
+    music: 'african%20musician%20performing%20concert%20stage%20ghana',
+    sports: 'ghana%20football%20stadium%20black%20stars%20soccer',
+    entertainment: 'african%20celebrity%20red%20carpet%20ghana%20movie',
+    crypto: 'bitcoin%20cryptocurrency%20digital%20finance%20africa',
+    culture: 'ghana%20accra%20city%20street%20african%20culture',
+    local: 'ghana%20accra%20street%20market%20trotro%20daily%20life',
+  };
+
+  const imagePrompt = categoryImages[market.category] || categoryImages.local;
+
   return (
     <Link href={`/markets/${market.slug}`} className="block">
       <div className="bg-white/5 backdrop-blur-xl rounded-3xl overflow-hidden border border-white/10 hover:border-white/20 transition-all cursor-pointer group">
@@ -82,11 +94,11 @@ export function MarketCard({ market }: { market: Market }) {
         {/* Card Image */}
         <div className="h-32 relative overflow-hidden">
           <img
-            src={`https://image.pollinations.ai/prompt/wide%20landscape%20photo%20of%20${encodeURIComponent(market.title)}%20${encodeURIComponent(market.category)}%20context%20high%20quality%204k?width=800&height=400&nologo=true&seed=${hash}`}
+            src={`https://image.pollinations.ai/prompt/${imagePrompt}%20cinematic%20high%20quality?width=800&height=400&nologo=true&seed=${hash}`}
             alt={market.title}
-            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent" />
           <div className="absolute bottom-2 left-4">
             <div className="inline-block px-2 py-0.5 bg-black/60 backdrop-blur-md text-white/90 border border-white/10 rounded-full text-[10px] uppercase tracking-wider font-bold">
               {market.category}

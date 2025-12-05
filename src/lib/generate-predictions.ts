@@ -34,36 +34,58 @@ export async function generatePredictionsFromTopics(topics: NormalizedTopic[]): 
     });
 
     const prompt = `
-You are an expert prediction market maker for "NoCap", an app for African Gen-Z users.
-Your goal is to create FUN, VIRAL, and FUTURE-ORIENTED prediction markets based on current news FROM AFRICA.
+You are an expert prediction market maker for "NoCap", an app for Ghanaian Gen-Z users.
+Your goal is to create FUN, VIRAL, and CELEBRITY-FOCUSED prediction markets based on GHANA TWITTER BANTER and CELEBRITY GOSSIP.
 
 CRITICAL RULES:
 1. ONLY generate questions about FUTURE outcomes happening within the NEXT 1-3 DAYS.
 2. DO NOT generate questions about events that have already happened.
 3. Each question must have a clear deadline (Closing Date) between 24 and 72 hours from now.
-4. Categories must be one of: music, sports, politics, entertainment, crypto, culture.
-5. Focus on SHORT TERM, HIGH VELOCITY events (e.g. "Will [Team] win tomorrow?", "Will [Coin] hit $X by Friday?").
+4. Categories must be one of: music, sports, entertainment, crypto, culture, local.
+5. PRIORITIZE CELEBRITY NEWS - at least 60% of questions should be about celebrities.
 6. Confidence score (0-1) represents how clear and unambiguous the resolution criteria would be.
-7. FOCUS ON AFRICA - Nigerian music, Ghanaian football, South African politics, Kenyan tech, etc.
-8. Include events from: Nigeria, Ghana, Kenya, South Africa, Egypt, Tanzania, Rwanda, Senegal, Ethiopia, Uganda.
+7. BE HYPER-LOCAL TO GHANA - Reference specific Ghanaian celebrities, events, drama.
+8. NO BORING POLITICS - Focus on celebrity drama, relationships, beef, announcements.
+9. ALL QUESTIONS MUST BE ABOUT GHANA - No other countries.
 
-AFRICAN FOCUS EXAMPLES:
-- "Will Asake drop a new single this week?"
-- "Will Ghana Black Stars win their next AFCON qualifier?"
-- "Will Kenya's Central Bank announce crypto regulations by Friday?"
-- "Will Burna Boy announce an African tour date?"
-- "Will the Nigerian Naira strengthen against USD tomorrow?"
-- "Will Amapiano dominate the SA charts this weekend?"
+GHANA CELEBRITIES TO FOCUS ON:
+Musicians: Sarkodie, Shatta Wale, Stonebwoy, Black Sherif, Medikal, King Promise, KiDi, Kuami Eugene, Gyakie, Camidoh, Mr Drew, Wendy Shay, Eno Barony, Sista Afia
+Actors/Actresses: Jackie Appiah, Nana Ama McBrown, Yvonne Nelson, John Dumelo, Lydia Forson, Benedicta Gafah, Fella Makafui, Juliet Ibrahim
+Influencers: Kwadwo Sheldon, Zionfelix, Delay, Sweet Maame Adwoa, Nkonkonsa
+Comedians: Clemento Suarez, SDK Dele, Pararan, DKB, Foster Romanus
+Sports: Thomas Partey, Mohammed Kudus, Andre Ayew, Inaki Williams, Otto Addo
 
-Here are the trending topics:
+CELEBRITY QUESTION EXAMPLES (COPY THIS VIBE):
+- "Will Shatta Wale shade Stonebwoy on Twitter within 48 hours? 🔥"
+- "Will Sarkodie drop a new song or snippet this week? 🎵"
+- "Will Jackie Appiah post a new luxury lifestyle video within 72 hours? 💅"
+- "Will any Ghanaian celebrity couple break up announcement trend this week? 💔"
+- "Will Medikal and Fella Makafui relationship drama trend on Twitter? 👀"
+- "Will Black Sherif make a surprise announcement within 48 hours? 🖤"
+- "Will Yvonne Nelson respond to any beef on social media this week? 🍿"
+- "Will Nana Ama McBrown's show get any celebrity drama this week? 📺"
+- "Will Mohammed Kudus score in his next match within 72 hours? ⚽"
+- "Will Kwadwo Sheldon roast any celebrity this week? 😂"
+- "Will Delay interview a controversial guest this week? 🎤"
+- "Will any Ghanaian celebrity wedding trend on social media this week? 💍"
+- "Will King Promise and KiDi collaboration rumors surface this week? 🎶"
+- "Will Wendy Shay and Sista Afia beef resurface within 72 hours? 🥊"
+- "Will Thomas Partey trend on Ghana Twitter for non-football reasons? 👀"
+
+LOCAL LIFE EXAMPLES (MIX THESE IN):
+- "Will ECG announce dumsor in Accra within 48 hours? 🕯️"
+- "Will fuel prices increase at Goil or Shell this week? ⛽"
+- "Will a viral trotro video trend on Ghana Twitter? 🚐"
+
+Here are the trending topics from Ghana (use these to inspire CELEBRITY-FOCUSED questions):
 ${JSON.stringify(batch.map(t => ({ title: t.title, snippet: t.snippet, published: t.publishedAt })), null, 2)}
 
 Output valid JSON only. Do not wrap in markdown. The format should be:
 {
   "predictions": [
     { 
-      "title": "Will [Artist] drop the album [Name] by Friday?",
-      "category": "music",
+      "title": "Will [celebrity name] [do something specific] within [timeframe]?",
+      "category": "entertainment",
       "closesAt": "2024-12-31T23:59:00Z",
       "confidence": 0.9,
       "sourceTitleReference": "Title of the source topic used" 

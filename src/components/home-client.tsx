@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { MarketCard } from '@/components/market-card'
 import { useRouter } from 'next/navigation'
+import { getMarkets } from '@/app/actions/markets'
 
 interface HomeClientProps {
     initialMarkets: any[]
@@ -12,9 +13,33 @@ export function HomeClient({ initialMarkets }: HomeClientProps) {
     const [markets, setMarkets] = useState(initialMarkets)
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [pullDistance, setPullDistance] = useState(0)
+    const [lastUpdated, setLastUpdated] = useState(new Date())
     const touchStartY = useRef(0)
     const containerRef = useRef<HTMLDivElement>(null)
     const router = useRouter()
+
+    // Auto-refresh every 30 seconds
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            try {
+                const newMarkets = await getMarkets()
+                if (newMarkets.length !== markets.length ||
+                    (newMarkets[0]?.id !== markets[0]?.id)) {
+                    setMarkets(newMarkets)
+                    setLastUpdated(new Date())
+                }
+            } catch (error) {
+                console.error('Auto-refresh failed:', error)
+            }
+        }, 30000) // 30 seconds
+
+        return () => clearInterval(interval)
+    }, [markets])
+
+    // Update markets when initialMarkets prop changes
+    useEffect(() => {
+        setMarkets(initialMarkets)
+    }, [initialMarkets])
 
     const handleTouchStart = (e: React.TouchEvent) => {
         if (containerRef.current && containerRef.current.scrollTop === 0) {
@@ -88,7 +113,7 @@ export function HomeClient({ initialMarkets }: HomeClientProps) {
                     {[
                         { name: 'music', emoji: '🎵', color: '#FF6B35', image: 'concert%20crowd%20neon%20lights' },
                         { name: 'sports', emoji: '⚽', color: '#00FF94', image: 'stadium%20soccer%20field' },
-                        { name: 'politics', emoji: '🗳️', color: '#2E5CFF', image: 'parliament%20building%20flags' },
+                        { name: 'local', emoji: '🏙️', color: '#FFD700', image: 'african%20city%20street%20market' },
                         { name: 'entertainment', emoji: '🎬', color: '#FF0055', image: 'movie%20premiere%20red%20carpet' },
                         { name: 'crypto', emoji: '₿', color: '#F7931A', image: 'bitcoin%20digital%20currency' },
                         { name: 'culture', emoji: '🌍', color: '#9B59B6', image: 'diverse%20people%20city' },
