@@ -83,4 +83,39 @@ export const aiGeneratedTopics = pgTable('ai_generated_topics', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
+import { relations } from 'drizzle-orm';
 
+// Relations
+export const marketsRelations = relations(markets, ({ many }) => ({
+  options: many(marketOptions),
+}));
+
+export const marketOptionsRelations = relations(marketOptions, ({ one }) => ({
+  market: one(markets, {
+    fields: [marketOptions.marketId],
+    references: [markets.id],
+  }),
+}));
+
+export const betsRelations = relations(bets, ({ one, many }) => ({
+  user: one(users, {
+    fields: [bets.userId],
+    references: [users.id],
+  }),
+  items: many(betItems),
+}));
+
+export const betItemsRelations = relations(betItems, ({ one }) => ({
+  bet: one(bets, {
+    fields: [betItems.betId],
+    references: [bets.id],
+  }),
+  market: one(markets, {
+    fields: [betItems.marketId],
+    references: [markets.id],
+  }),
+  marketOption: one(marketOptions, {
+    fields: [betItems.marketOptionId],
+    references: [marketOptions.id],
+  }),
+}));

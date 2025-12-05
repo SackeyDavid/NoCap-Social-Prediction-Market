@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { MessageCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 interface Market {
   id: string;
@@ -14,6 +15,10 @@ interface Market {
 
 export function MarketCard({ market }: { market: Market }) {
   const navigate = useRouter().push;
+  const [showBetModal, setShowBetModal] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<'yes' | 'no' | null>(null);
+  const [stake, setStake] = useState('10');
+  const [loading, setLoading] = useState(false);
 
   // Mock data for UI matching since backend doesn't compute these yet
   // Deterministic pseudo-random based on market ID to avoid hydration mismatch
@@ -24,11 +29,43 @@ export function MarketCard({ market }: { market: Market }) {
   const totalVolume = (hash % 10000) + 1000;
 
   const handleSelection = (selection: 'yes' | 'no', e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent Link navigation
+    e.preventDefault();
     e.stopPropagation();
-    // Navigate to betting page with selection pre-selected?
-    // For now just go to page
-    navigate(`/markets/${market.slug}`);
+    setSelectedOption(selection);
+    setShowBetModal(true);
+  };
+
+  const handlePlaceBet = async () => {
+    if (!selectedOption) return;
+
+    setLoading(true);
+    try {
+      const stakeCents = Math.floor(parseFloat(stake) * 100);
+      const option = (market as any).options?.find((o: any) =>
+        o.label.toLowerCase().includes(selectedOption)
+      );
+
+      if (!option) {
+        alert('Option not found');
+        return;
+      }
+
+      const { placeBet } = await import('@/app/actions/bets');
+      const res = await placeBet(market.id, option.id, stakeCents);
+
+      if (res.success) {
+        alert('Bet placed! Good luck! 🍀 No Cap!');
+        setShowBetModal(false);
+        setSelectedOption(null);
+        setStake('10');
+      } else {
+        alert('Error: ' + res.error);
+      }
+    } catch (e) {
+      alert('Failed to place bet');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,9 +75,9 @@ export function MarketCard({ market }: { market: Market }) {
         {/* Card Image */}
         <div className="h-32 relative overflow-hidden">
           <img
-            src={`https://image.pollinations.ai/prompt/cinematic%20photo%20of%20${encodeURIComponent(market.title)}%20${encodeURIComponent(market.category)}%20context%20high%20quality%204k?width=600&height=400&nologo=true&seed=${hash}`}
+            src={`https://image.pollinations.ai/prompt/wide%20landscape%20photo%20of%20${encodeURIComponent(market.title)}%20${encodeURIComponent(market.category)}%20context%20high%20quality%204k?width=800&height=400&nologo=true&seed=${hash}`}
             alt={market.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] to-transparent" />
           <div className="absolute bottom-2 left-4">
@@ -99,6 +136,71 @@ export function MarketCard({ market }: { market: Market }) {
           </div>
         </div>
       </div>
+
+      {/* Bet Modal */}
+      {showBetModal && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end justify-center"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowBetModal(false);
+          }}
+        >
+          <div
+            className="bg-[#1A1A1A] w-full max-w-md rounded-t-3xl p-6 border-t border-white/10 animate-in slide-in-from-bottom"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-white">
+                Place Bet on {selectedOption === 'yes' ? 'Yes' : 'No'}
+              </h3>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowBetModal(false);
+                }}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="text-sm font-medium text-gray-400 mb-2 block">Stake (GHS)</label>
+                <input
+                  type="number"
+                  value={stake}
+                  onChange={(e) => setStake(e.target.value)}
+                  min="1"
+                  className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 text-white text-lg font-mono px-4 focus:outline-none focus:ring-2 focus:ring-[#00FF94] focus:border-[#00FF94]"
+                />
+              </div>
+
+              <div className="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5">
+                <span className="text-gray-400 text-sm">Potential Return (1.9x)</span>
+                <span className="font-bold text-[#00FF94] text-xl font-mono">
+                  GHS {(parseFloat(stake || '0') * 1.9).toFixed(2)}
+                </span>
+              </div>
+
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handlePlaceBet();
+                }}
+                disabled={loading}
+                className="w-full h-14 bg-[#2E5CFF] hover:bg-[#2E5CFF]/90 text-white rounded-full font-bold text-lg disabled:opacity-50"
+              >
+                {loading ? 'Placing Bet...' : 'Confirm Bet 🚀'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Link>
   )
 }

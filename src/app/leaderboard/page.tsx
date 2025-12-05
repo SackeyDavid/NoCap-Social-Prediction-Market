@@ -40,7 +40,7 @@ export default async function LeaderboardPage() {
                                     <div className="font-bold text-white text-sm">
                                         {user.displayName || user.email?.split('@')[0] || 'Anonymous'}
                                     </div>
-                                    {isTop3 && <div className="text-[10px] text-[#00FF94] font-medium">Top Trader</div>}
+                                    {isTop3 && <div className="text-[10px] text-[#00FF94] font-medium">Top Predictor</div>}
                                 </div>
                             </div>
                             <div className="font-mono font-bold text-[#00FF94]">

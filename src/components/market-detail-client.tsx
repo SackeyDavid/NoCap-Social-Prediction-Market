@@ -91,7 +91,7 @@ export function MarketDetailClient({ market, user }: MarketDetailClientProps) {
                 <img
                     src={imageUrl}
                     alt={market.category}
-                    className="absolute inset-0 w-full h-full object-cover opacity-80"
+                    className="absolute inset-0 w-full h-full object-contain opacity-80"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent" />
 

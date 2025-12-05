@@ -82,18 +82,39 @@ export function HomeClient({ initialMarkets }: HomeClientProps) {
                 </span>
             </div>
 
-            {/* Story Bubbles - Categories */}
+            {/* Category Bubbles */}
             <div className="mt-6 mb-8 px-4">
                 <div className="flex gap-4 overflow-x-auto pb-4 px-2 scrollbar-hide">
-                    {Array.from(new Set(markets.map(m => m.category))).map(category => (
-                        <div key={category} className="flex flex-col items-center gap-2 min-w-[64px]">
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-[#00FF94] p-[2px] flex items-center justify-center">
-                                <span className="text-2xl capitalize">
-                                    {category === 'music' ? '🎵' : category === 'sports' ? '⚽' : category === 'politics' ? '🗳️' : category === 'crypto' ? '₿' : '🌍'}
-                                </span>
+                    {[
+                        { name: 'music', emoji: '🎵', color: '#FF6B35', image: 'concert%20crowd%20neon%20lights' },
+                        { name: 'sports', emoji: '⚽', color: '#00FF94', image: 'stadium%20soccer%20field' },
+                        { name: 'politics', emoji: '🗳️', color: '#2E5CFF', image: 'parliament%20building%20flags' },
+                        { name: 'entertainment', emoji: '🎬', color: '#FF0055', image: 'movie%20premiere%20red%20carpet' },
+                        { name: 'crypto', emoji: '₿', color: '#F7931A', image: 'bitcoin%20digital%20currency' },
+                        { name: 'culture', emoji: '🌍', color: '#9B59B6', image: 'diverse%20people%20city' },
+                    ].map(cat => (
+                        <a
+                            key={cat.name}
+                            href={`/category/${cat.name}`}
+                            className="flex flex-col items-center gap-2 min-w-[72px] group"
+                        >
+                            <div
+                                className="w-16 h-16 rounded-full p-[2px] relative overflow-hidden transition-transform group-hover:scale-110"
+                                style={{ background: `linear-gradient(135deg, ${cat.color}, ${cat.color}80)` }}
+                            >
+                                <div className="w-full h-full rounded-full overflow-hidden relative">
+                                    <img
+                                        src={`https://image.pollinations.ai/prompt/${cat.image}%20abstract%20icon?width=200&height=200&nologo=true&seed=${cat.name.length * 100}`}
+                                        alt={cat.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                        <span className="text-2xl">{cat.emoji}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <span className="text-xs text-gray-400 capitalize">{category}</span>
-                        </div>
+                            <span className="text-xs text-gray-400 capitalize font-medium group-hover:text-white transition-colors">{cat.name}</span>
+                        </a>
                     ))}
                 </div>
             </div>
