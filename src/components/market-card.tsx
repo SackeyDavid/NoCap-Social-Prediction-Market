@@ -76,17 +76,23 @@ export function MarketCard({ market }: { market: Market }) {
     }
   };
 
-  // Category-specific image prompts for better relevance
+  // Category images from Unsplash (reliable free images)
   const categoryImages: Record<string, string> = {
-    music: 'african%20musician%20performing%20concert%20stage%20ghana',
-    sports: 'ghana%20football%20stadium%20black%20stars%20soccer',
-    entertainment: 'african%20celebrity%20red%20carpet%20ghana%20movie',
-    crypto: 'bitcoin%20cryptocurrency%20digital%20finance%20africa',
-    culture: 'ghana%20accra%20city%20street%20african%20culture',
-    local: 'ghana%20accra%20street%20market%20trotro%20daily%20life',
+    music: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=400&fit=crop',
+    sports: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&h=400&fit=crop',
+    entertainment: 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=800&h=400&fit=crop',
+    crypto: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&h=400&fit=crop',
+    culture: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&h=400&fit=crop',
+    local: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=400&fit=crop',
   };
 
-  const imagePrompt = categoryImages[market.category] || categoryImages.local;
+  const categoryEmojis: Record<string, string> = {
+    music: '🎵', sports: '⚽', entertainment: '🎬',
+    crypto: '₿', culture: '🌍', local: '🏙️'
+  };
+
+  const imageUrl = categoryImages[market.category] || categoryImages.local;
+  const emoji = categoryEmojis[market.category] || '📊';
   const { theme } = useTheme();
 
   return (
@@ -97,16 +103,20 @@ export function MarketCard({ market }: { market: Market }) {
         }`}>
 
         {/* Card Image */}
-        <div className="h-32 relative overflow-hidden">
+        <div className="h-28 relative overflow-hidden bg-gray-800">
           <img
-            src={`https://image.pollinations.ai/prompt/${imagePrompt}%20cinematic%20high%20quality?width=800&height=400&nologo=true&seed=${hash}`}
-            alt={market.title}
-            className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
+            src={imageUrl}
+            alt=""
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            loading="lazy"
           />
           <div className={`absolute inset-0 bg-gradient-to-t ${theme === 'dark'
-              ? 'from-[#1A1A1A] via-[#1A1A1A]/50 to-transparent'
-              : 'from-white via-white/50 to-transparent'
+              ? 'from-[#1A1A1A] via-[#1A1A1A]/60 to-black/20'
+              : 'from-white via-white/60 to-transparent'
             }`} />
+          <div className="absolute top-3 right-3">
+            <span className="text-2xl drop-shadow-lg">{emoji}</span>
+          </div>
           <div className="absolute bottom-2 left-4">
             <div className={`inline-block px-2 py-0.5 backdrop-blur-md border rounded-full text-[10px] uppercase tracking-wider font-bold ${theme === 'dark'
                 ? 'bg-black/60 text-white/90 border-white/10'
